@@ -29,20 +29,19 @@ contract HelperConfig is Script {
         }
     }
 
+    // Sepolia ETH
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
-        NetworkConfig memory sepoliaConfig = NetworkConfig({
-            priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306
-        });
+        NetworkConfig memory sepoliaConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return sepoliaConfig;
     }
 
+    // Mainnet ETH
     function getMainnetEthConfig() public pure returns (NetworkConfig memory) {
-        NetworkConfig memory ethMainnetConfig = NetworkConfig({
-            priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419
-        });
+        NetworkConfig memory ethMainnetConfig = NetworkConfig({priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
         return ethMainnetConfig;
     }
 
+    // Local Anvil Chain
     function getorCreateAnvilEthConfig() public returns (NetworkConfig memory) {
         if (activeNetworkConfig.priceFeed != address(0)) {
             return activeNetworkConfig;
@@ -50,15 +49,10 @@ contract HelperConfig is Script {
 
         vm.startBroadcast();
 
-        MockV3Aggregator mockV3Aggregator = new MockV3Aggregator(
-            DECIMALS,
-            INITIAL_ANSWER
-        );
+        MockV3Aggregator mockV3Aggregator = new MockV3Aggregator(DECIMALS, INITIAL_ANSWER);
         vm.stopBroadcast();
 
-        NetworkConfig memory anvilEthConfig = NetworkConfig({
-            priceFeed: address(mockV3Aggregator)
-        });
+        NetworkConfig memory anvilEthConfig = NetworkConfig({priceFeed: address(mockV3Aggregator)});
         return anvilEthConfig;
     }
 }
