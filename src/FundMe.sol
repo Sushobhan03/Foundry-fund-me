@@ -81,7 +81,7 @@ contract FundMe {
     }
 
     /// @notice Withdraws funds from the contract in a cheaper way
-    /// @dev Explain to a developer any extra details
+    /// @dev We extract sFunders length only once instead of putting it in a loop to save gas
     function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = sFunders.length;
         for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
