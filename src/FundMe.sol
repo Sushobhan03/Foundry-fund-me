@@ -19,7 +19,8 @@ contract FundMe {
 
     uint256 private constant MINIMUM_USD = 5 * 1e18;
     address[] private sFunders;
-    mapping(address funder => uint256 amountFunded) private sAddressToAmountFunded;
+    mapping(address funder => uint256 amountFunded)
+        private sAddressToAmountFunded;
     address private immutable I_OWNER;
     AggregatorV3Interface private sPriceFeed;
 
@@ -58,7 +59,10 @@ contract FundMe {
 
     /// @notice Funds our contract based on ETH/USD price
     function fund() public payable {
-        require(msg.value.getConversionRate(sPriceFeed) >= MINIMUM_USD, "Didn't send enough ETH");
+        require(
+            msg.value.getConversionRate(sPriceFeed) >= MINIMUM_USD,
+            "Didn't send enough ETH"
+        );
         sFunders.push(msg.sender);
         sAddressToAmountFunded[msg.sender] += msg.value;
     }
@@ -66,7 +70,11 @@ contract FundMe {
     /// @notice Withdraws funds from the contract
     /// @dev Only the owner of the contract can withdraw successfully
     function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < sFunders.length; funderIndex++) {
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < sFunders.length;
+            funderIndex++
+        ) {
             address funder = sFunders[funderIndex];
             sAddressToAmountFunded[funder] = 0;
         }
@@ -74,7 +82,9 @@ contract FundMe {
         sFunders = new address[](0); //Resetting an array
 
         //Withdraw the money
-        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
         if (!callSuccess) {
             revert FundMe__CallFailed();
         }
@@ -84,14 +94,20 @@ contract FundMe {
     /// @dev We extract sFunders length only once instead of putting it in a loop to save gas
     function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = sFunders.length;
-        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < fundersLength;
+            funderIndex++
+        ) {
             address funder = sFunders[funderIndex];
             sAddressToAmountFunded[funder] = 0;
         }
 
         sFunders = new address[](0);
 
-        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
 
         if (!callSuccess) {
             revert FundMe__CallFailed();
@@ -122,7 +138,9 @@ contract FundMe {
     /// @notice Gets the funded amount by the respective address
     /// @param funder Address of the funder
     /// @return The total funded amount
-    function getAddressToAmountFunded(address funder) external view returns (uint256) {
+    function getAddressToAmountFunded(
+        address funder
+    ) external view returns (uint256) {
         return sAddressToAmountFunded[funder];
     }
 

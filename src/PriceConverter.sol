@@ -9,12 +9,21 @@ library PriceConverter {
     /// @dev Uses the Chainlink pricefeed to fetch the current ETH/USD price
     /// @param sPriceFeed The priceFeed interface
     /// @return The current price
-    function getPrice(AggregatorV3Interface sPriceFeed) internal view returns (uint256) {
-        (, /* uint80 roundID */
-            int256 price,,, /*uint startedAt*/ /*uint timeStamp*/ /*uint80 answeredInRound*/
+    function getPrice(
+        AggregatorV3Interface sPriceFeed
+    ) internal view returns (uint256) {
+        (
+            ,
+            /* uint80 roundID */
+            int256 price /*uint startedAt*/ /*uint timeStamp*/ /*uint80 answeredInRound*/,
+            ,
+            ,
+
         ) = sPriceFeed.latestRoundData();
 
         // ETH/USD rate has 18 digits
+        // Chainlink ETH/USD price is expected to be positive.
+        // forge-lint: disable-next-line(unsafe-typecast)
         return uint256(price * 1e10);
     }
 
@@ -24,7 +33,10 @@ library PriceConverter {
     ///@param sPriceFeed The Pricefeed Inetrface
     ///@return ethAmountInUsd The value of the ETH amount in USD
 
-    function getConversionRate(uint256 ethAmount, AggregatorV3Interface sPriceFeed) internal view returns (uint256) {
+    function getConversionRate(
+        uint256 ethAmount,
+        AggregatorV3Interface sPriceFeed
+    ) internal view returns (uint256) {
         uint256 ethPrice = getPrice(sPriceFeed);
         uint256 ethAmountInUsd = (ethAmount * ethPrice) / 1e18;
 
@@ -33,7 +45,9 @@ library PriceConverter {
 
     /// @notice Gets the current version of the AggregatorV3Interface
     /// @return version The version
-    function getVersion(AggregatorV3Interface sPriceFeed) internal view returns (uint256) {
+    function getVersion(
+        AggregatorV3Interface sPriceFeed
+    ) internal view returns (uint256) {
         return sPriceFeed.version();
     }
 }
