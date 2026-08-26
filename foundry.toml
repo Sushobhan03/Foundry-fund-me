@@ -4,5 +4,6 @@ out = "out"
 libs= ["lib"]
 remappings = ["@chainlink/=lib/chainlink-brownie-contracts/"]
 ffi = true
+ignored_error_codes = [6335, 2424]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
